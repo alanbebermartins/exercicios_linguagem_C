@@ -3,9 +3,9 @@
 
 int main(){
     // Imprime o cabecalho do jogo
-    printf("************************************\n");
+    printf("***************************************\n");
     printf("* Bem vindo ao jogo do numero secreto *\n");
-    printf("************************************\n");
+    printf("***************************************\n");
 
     // A palavra reservada int serve para tipar a variavel do tipo inteiro
     int numeroSecreto = 25;
