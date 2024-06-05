@@ -3,7 +3,7 @@
 
 // OBS: PRECISA TER O ARQUIVO TXT COM O DESENHO DO MAPA DO JOGO PARA FUNCIONAR
 // Variáveis globais
-char mapa[5][10+1];
+char** mapa;
 int linhas;
 int colunas;
 
@@ -21,6 +21,14 @@ int main() {
         exit(1);
     }
 
+    fscanf(f, "%d %d", &linhas, &colunas);
+    printf("Linhas %d e Colunas %d\n\n", linhas, colunas);
+
+    mapa = malloc(sizeof(char*) * linhas);
+    for ( int i = 0; i < linhas; i++) {
+        mapa[i] = malloc(sizeof(char) * (colunas + 1));
+    }
+
     for( int i = 0; i < 5; i++){
         fscanf(f, "%s", mapa[i]);
     }
@@ -31,8 +39,8 @@ int main() {
 
     fclose(f);
 
-    // mapa[0][0] = '|';
-    // mapa[4][9] = '@';
-
-    // printf("%c %c\n", mapa[0][0], mapa[4][9]);
+    for (int i = 0; i < linhas; i++) {
+        free(mapa[i]);
+    }
+    free(mapa);
 }
