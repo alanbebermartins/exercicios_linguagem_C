@@ -11,6 +11,9 @@ int colunas;
 void liberarmapa();
 void alocarmapa();
 void lermapa();
+void imprimirmapa();
+int acabou();
+void move(char direcao);
 
 // Funções do jogo
 
