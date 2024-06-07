@@ -1,3 +1,14 @@
+#define CIMA 'w'
+#define BAIXO 's'
+#define ESQUERDA 'a'
+#define DIREITA 'd'
+#define AVATAR '@'
+#define VAZIO '.'
+#define PAREDE_VERTICAL '|'
+#define PAREDE_HORIZONTAL '-'
+
+
+
 // Variáveis globais
 struct mapa {
     char** matriz;
@@ -20,5 +31,9 @@ void alocarmapa();
 void lermapa();
 void imprimirmapa();
 int acabou();
-void move(char direcao);
 void encontramapa(MAPA* m, POSICAO* p,char c);
+int ehdirecao(char direcao);
+int ehvalida(MAPA* m, int x, int y);
+int ehvazia(MAPA* m, int x, int y);
+void andanomapa(MAPA* m, int xorigem, int yorigem, int xdestino, int ydestino);
+void move(char direcao);

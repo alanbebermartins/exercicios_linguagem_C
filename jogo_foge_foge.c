@@ -66,32 +66,60 @@ void encontramapa(MAPA* m, POSICAO* p, char c) {
     }
 }
 
-void move(char direcao) {
-    int x;
-    int y;
+int ehdirecao(char direcao) {
+    return direcao == ESQUERDA || direcao == CIMA || direcao == BAIXO || direcao == DIREITA;
+}
 
-    m.matriz[avatar.x][avatar.y] = '.';
+int ehvalida(MAPA* m, int x, int y) {
+    if (x >= m->linhas) 
+        return 0;
+    if (y >= m->colunas) 
+        return 0;
+
+    return 1;
+}
+
+int ehvazia(MAPA* m, int x, int y) {
+    return m->matriz[x][y] == VAZIO;
+}
+
+void andanomapa(MAPA* m, int xorigem, int yorigem, int xdestino, int ydestino) {
+    char personagem = m->matriz[xorigem][yorigem];
+    m->matriz[xdestino][ydestino] = personagem;
+    m->matriz[xorigem][yorigem] = VAZIO;
+}
+
+void move(char direcao) {
+
+    if (!ehdirecao(direcao)) 
+    return;
+
+    int proximox = avatar.x;
+    int proximoy = avatar.y;
 
     switch (direcao) {
-        case 'a':
-            m.matriz[avatar.x][avatar.y-1] = '@';
-            avatar.y--;
+        case ESQUERDA:
+            proximoy--;
             break;
-        case 'w':
-            m.matriz[avatar.x-1][avatar.y] = '@';
-            avatar.x--;
+        case CIMA:
+            proximox--;
             break;
-        case 's':
-            m.matriz[avatar.x+1][avatar.y] = '@';
-            avatar.x++;
+        case BAIXO:
+            proximox++;
             break;
-        case 'd':
-            m.matriz[avatar.x][avatar.y+1] = '@';
-            avatar.y++;
+        case DIREITA:
+            proximoy++;
             break;
     }
 
+    if (!ehvalida(&m, proximox, proximoy))
+        return;
+    if (!ehvazia(&m, proximox, proximoy))
+        return;
     
+    andanomapa(&m, avatar.x, avatar.y, proximox, proximoy);
+    avatar.x = proximox;
+    avatar.y = proximoy;
 }
 
 int main() {
@@ -100,7 +128,7 @@ int main() {
     printf("**********************************\n\n");
 
     lermapa();
-    encontramapa(&m, &avatar, '@');
+    encontramapa(&m, &avatar, AVATAR);
 
     do {
         imprimirmapa();
