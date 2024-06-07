@@ -54,37 +54,44 @@ int acabou() {
     return 0;
 }
 
-void move(char direcao) {
-    int x;
-    int y;
-
-    // Acha a posição do avatar do foge foge
-    for ( int i = 0; i < m.linhas; i++) {
-        for ( int j = 0; j < m.colunas; j++) {
-            if (m.matriz[i][j] == '@') {
-                x = i;
-                y = j;
+void encontramapa(MAPA* m, POSICAO* p, char c) {
+    for ( int i = 0; i < m->linhas; i++) {
+        for ( int j = 0; j < m->colunas; j++) {
+            if (m->matriz[i][j] == c) {
+                p->x = i;
+                p->y = j;
                 break;
             }
         }
     }
+}
+
+void move(char direcao) {
+    int x;
+    int y;
+
+    m.matriz[avatar.x][avatar.y] = '.';
 
     switch (direcao) {
         case 'a':
-            m.matriz[x][y-1] = '@';
+            m.matriz[avatar.x][avatar.y-1] = '@';
+            avatar.y--;
             break;
         case 'w':
-            m.matriz[x-1][y] = '@';
+            m.matriz[avatar.x-1][avatar.y] = '@';
+            avatar.x--;
             break;
         case 's':
-            m.matriz[x+1][y] = '@';
+            m.matriz[avatar.x+1][avatar.y] = '@';
+            avatar.x++;
             break;
         case 'd':
-            m.matriz[x][y+1] = '@';
+            m.matriz[avatar.x][avatar.y+1] = '@';
+            avatar.y++;
             break;
     }
 
-    m.matriz[x][y] = '.';
+    
 }
 
 int main() {
@@ -93,10 +100,10 @@ int main() {
     printf("**********************************\n\n");
 
     lermapa();
+    encontramapa(&m, &avatar, '@');
 
     do {
         imprimirmapa();
-
         char comando;
         scanf(" %c", &comando);
         move(comando);
