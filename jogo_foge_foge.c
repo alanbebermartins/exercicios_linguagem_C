@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "foge_foge.h"
 
-struct mapa m;
+MAPA m;
 
 // OBS: PRECISA TER O ARQUIVO TXT COM O DESENHO DO MAPA DO JOGO PARA FUNCIONAR
 
