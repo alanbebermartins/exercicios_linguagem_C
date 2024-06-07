@@ -14,3 +14,10 @@ struct mapa {
 };
 
 typedef struct mapa MAPA;
+
+struct posicao {
+    int x;
+    int y;
+};
+
+typedef struct posicao POSICAO;

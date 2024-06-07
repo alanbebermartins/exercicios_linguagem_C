@@ -3,6 +3,7 @@
 #include "foge_foge.h"
 
 MAPA m;
+POSICAO avatar;
 
 // OBS: PRECISA TER O ARQUIVO TXT COM O DESENHO DO MAPA DO JOGO PARA FUNCIONAR
 
