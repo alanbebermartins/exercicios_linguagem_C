@@ -7,11 +7,28 @@ char** mapa;
 int linhas;
 int colunas;
 
-int main() {
-    printf("**********************************\n");
-    printf("* Bem vindo ao jogo do foge foge *\n");
-    printf("**********************************\n\n");
+// Lista das funções do jogo
+void liberarmapa();
+void alocarmapa();
+void lermapa();
 
+// Funções do jogo
+
+void liberarmapa(){
+    for (int i = 0; i < linhas; i++) {
+        free(mapa[i]);
+    }
+    free(mapa);
+}
+
+void alocarmapa() {
+    mapa = malloc(sizeof(char*) * linhas);
+    for ( int i = 0; i < linhas; i++) {
+        mapa[i] = malloc(sizeof(char) * (colunas + 1));
+    }
+}
+
+void lermapa() {
     FILE* f;
 
     f = fopen("mapa.txt", "r");
@@ -22,25 +39,26 @@ int main() {
     }
 
     fscanf(f, "%d %d", &linhas, &colunas);
-    printf("Linhas %d e Colunas %d\n\n", linhas, colunas);
 
-    mapa = malloc(sizeof(char*) * linhas);
-    for ( int i = 0; i < linhas; i++) {
-        mapa[i] = malloc(sizeof(char) * (colunas + 1));
-    }
+    alocarmapa();
 
     for( int i = 0; i < 5; i++){
         fscanf(f, "%s", mapa[i]);
     }
 
+    fclose(f);
+}
+
+int main() {
+    printf("**********************************\n");
+    printf("* Bem vindo ao jogo do foge foge *\n");
+    printf("**********************************\n\n");
+
+    lermapa();
+
     for( int i = 0; i < 5; i++){
         printf("%s\n", mapa[i]);
     }
 
-    fclose(f);
-
-    for (int i = 0; i < linhas; i++) {
-        free(mapa[i]);
-    }
-    free(mapa);
+    liberarmapa();
 }
