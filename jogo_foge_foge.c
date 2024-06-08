@@ -20,10 +20,13 @@ void copiamapa(MAPA* destino, MAPA* origem) {
 
 int paraondevaiofantasma(int xatual, int yatual, int* xdestino, int* ydestino) {
     int opcoes[4][2] = {
-        {xatual, yatual+1}, {xatual+1, yatual}, {xatual, yatual-1}, {xatual-1, yatual}
+        {xatual, yatual+1}, 
+        {xatual+1, yatual}, 
+        {xatual, yatual-1}, 
+        {xatual-1, yatual}
     };
     srand(time(0));
-    for (int i = 0; i < 10; i++) {
+    for(int i = 0; i < 10; i++) {
         int posicao = rand() % 4;
         if (podeandar(&m, FANTASMA, opcoes[posicao][0], opcoes[posicao][1])) {
             *xdestino = opcoes[posicao][0];
@@ -37,8 +40,8 @@ int paraondevaiofantasma(int xatual, int yatual, int* xdestino, int* ydestino) {
 void fantasmas() {
     MAPA copia;
     copiamapa(&copia, &m);
-    for (int i = 0; i < m.linhas; i++) {
-        for (int j = 0; j < m.colunas; j++) {
+    for (int i = 0; i < copia.linhas; i++) {
+        for (int j = 0; j < copia.colunas; j++) {
             if (copia.matriz[i][j] == FANTASMA) {
                 int xdestino;
                 int ydestino;
@@ -64,38 +67,38 @@ int podeandar(MAPA* m, char personagem, int x, int y) {
     return ehvalida(m, x, y) && !ehparede(m, x, y) && !ehumpersonagem(m, personagem, x, y);
 }
 
-void liberarmapa(){
-    for (int i = 0; i < m.linhas; i++) {
-        free(m.matriz[i]);
+void liberarmapa(MAPA* m){
+    for (int i = 0; i < m->linhas; i++) {
+        free(m->matriz[i]);
     }
-    free(m.matriz);
+    free(m->matriz);
 }
 
-void alocarmapa() {
-    m.matriz = malloc(sizeof(char*) * m.linhas);
-    for (int i = 0; i < m.linhas; i++) {
-        m.matriz[i] = malloc(sizeof(char) * (m.colunas + 1));
+void alocarmapa(MAPA* m) {
+    m->matriz = malloc(sizeof(char*) * m->linhas);
+    for (int i = 0; i < m->linhas; i++) {
+        m->matriz[i] = malloc(sizeof(char) * (m->colunas + 1));
     }
 }
 
-void lermapa() {
+void lermapa(MAPA* m) {
     FILE* f;
     f = fopen("mapa.txt", "r");
     if(f == 0){
         printf("Desculpe, mas não foi possivel ler o mapa!\n");
         exit(1);
     }
-    fscanf(f, "%d %d", &(m.linhas), &(m.colunas));
-    alocarmapa();
-    for( int i = 0; i < 5; i++){
-        fscanf(f, "%s", m.matriz[i]);
+    fscanf(f, "%d %d", &(m->linhas), &(m->colunas));
+    alocarmapa(m);
+    for(int i = 0; i < m->linhas; i++){
+        fscanf(f, "%s", m->matriz[i]);
     }
     fclose(f);
 }
 
-void imprimirmapa() {
-    for( int i = 0; i < 5; i++){
-        printf("%s\n", m.matriz[i]);
+void imprimirmapa(MAPA* m) {
+    for( int i = 0; i < m->linhas; i++){
+        printf("%s\n", m->matriz[i]);
     }
 }
 
@@ -123,9 +126,9 @@ int ehdirecao(char direcao) {
 }
 
 int ehvalida(MAPA* m, int x, int y) {
-    if (x >= m->linhas) 
+    if(x >= m->linhas) 
         return 0;
-    if (y >= m->colunas) 
+    if(y >= m->colunas) 
         return 0;
     return 1;
 }
@@ -143,15 +146,17 @@ void andanomapa(MAPA* m, int xorigem, int yorigem, int xdestino, int ydestino) {
 void move(char direcao) {
     if (!ehdirecao(direcao)) 
     return;
+
     int proximox = avatar.x;
     int proximoy = avatar.y;
-    switch (direcao) {
+
+    switch(direcao) {
         case ESQUERDA:
             proximoy--;
             break;
         case CIMA:
             proximox--;
-            break;
+            break;  
         case BAIXO:
             proximox++;
             break;
@@ -172,14 +177,14 @@ int main() {
     printf("**********************************\n");
     printf("* Bem vindo ao jogo do foge foge *\n");
     printf("**********************************\n\n");
-    lermapa();
+    lermapa(&m);
     encontramapa(&m, &avatar, AVATAR);
     do {
-        imprimirmapa();
+        imprimirmapa(&m);
         char comando;
         scanf(" %c", &comando);
         move(comando);
         fantasmas();
     } while (!acabou());
-    liberarmapa();
+    liberarmapa(&m);
 }
