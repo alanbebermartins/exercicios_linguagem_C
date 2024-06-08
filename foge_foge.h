@@ -3,11 +3,10 @@
 #define ESQUERDA 'a'
 #define DIREITA 'd'
 #define AVATAR '@'
+#define FANTASMA 'F'
 #define VAZIO '.'
 #define PAREDE_VERTICAL '|'
 #define PAREDE_HORIZONTAL '-'
-
-
 
 // Variáveis globais
 struct mapa {
@@ -26,12 +25,19 @@ struct posicao {
 typedef struct posicao POSICAO;
 
 // Lista das funções do jogo
+
+void copiamapa(MAPA* destino, MAPA* origem);
+int paraondevaiofantasma(int xatual, int yatual, int* xdestino, int* ydestino);
+void fantasmas();
+int ehparede(MAPA* m, int x, int y);
+int ehumpersonagem(MAPA* m, char personagem, int x, int y);
+int podeandar(MAPA* m, char personagem, int x, int y);
 void liberarmapa();
 void alocarmapa();
 void lermapa();
 void imprimirmapa();
 int acabou();
-void encontramapa(MAPA* m, POSICAO* p,char c);
+int encontramapa(MAPA* m, POSICAO* p,char c);
 int ehdirecao(char direcao);
 int ehvalida(MAPA* m, int x, int y);
 int ehvazia(MAPA* m, int x, int y);
