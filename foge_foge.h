@@ -7,6 +7,8 @@
 #define VAZIO '.'
 #define PAREDE_VERTICAL '|'
 #define PAREDE_HORIZONTAL '-'
+#define PILULA 'P'
+#define BOMBA 'b'
 
 // Variáveis globais
 struct mapa {
@@ -35,6 +37,7 @@ int podeandar(MAPA* m, char personagem, int x, int y);
 void liberarmapa(MAPA* m);
 void alocarmapa(MAPA* m);
 void lermapa(MAPA* m);
+void imprimeparte(char desenho[4][7], int parte);
 void imprimirmapa(MAPA* m);
 int acabou();
 int encontramapa(MAPA* m, POSICAO* p,char c);
@@ -43,3 +46,5 @@ int ehvalida(MAPA* m, int x, int y);
 int ehvazia(MAPA* m, int x, int y);
 void andanomapa(MAPA* m, int xorigem, int yorigem, int xdestino, int ydestino);
 void move(char direcao);
+void explodepilula();
+void explodepilula2(int x, int y, int somax, int somay, int qtd);

@@ -4,8 +4,46 @@
 #include <time.h>
 #include "foge_foge.h"
 
+// Variaveis para renderizar os personagens
+
+char desenhofantasma[4][7] = {
+    {" .-.  " },
+    {"| OO| " },
+    {"|   | " },
+    {"'^^^' " }
+};
+
+char desenhoparede[4][7] = {
+    {"......" },
+    {"......" },
+    {"......" },
+    {"......" }
+};
+
+char desenhoheroi[4][7] = {
+    {" .--. "  },
+    {"/ _.-'"  },
+    {"\\  '-." },
+    {" '--' "  }
+};
+
+char desenhopilula[4][7] = {
+    {"      "},
+    {" .-.  "},
+    {" '-'  "},
+    {"      "}
+};
+
+char desenhovazio[4][7] = {
+    {"      "},
+    {"      "},
+    {"      "},
+    {"      "}
+};
+
 MAPA m;
 POSICAO avatar;
+int tempilula = 0;
 // OBS: PRECISA TER O ARQUIVO TXT COM O DESENHO DO MAPA DO JOGO PARA FUNCIONAR
 // Funções do jogo
 
@@ -96,9 +134,38 @@ void lermapa(MAPA* m) {
     fclose(f);
 }
 
+void imprimeparte(char desenho[4][7], int parte) {
+    printf("%s", desenho[parte]);
+}
+
 void imprimirmapa(MAPA* m) {
     for( int i = 0; i < m->linhas; i++){
-        printf("%s\n", m->matriz[i]);
+
+        for(int parte = 0; parte < 4; parte++) {
+
+            for(int j = 0; j < m->colunas; j++) {
+
+                switch(m->matriz[i][j]) {
+                    case FANTASMA:
+                        imprimeparte(desenhofantasma, parte);
+                        break;
+                    case AVATAR:
+                        imprimeparte(desenhoheroi, parte);
+                        break;
+                    case PILULA:
+                        imprimeparte(desenhopilula, parte);
+                        break;
+                    case PAREDE_HORIZONTAL:
+                    case PAREDE_VERTICAL:
+                        imprimeparte(desenhoparede, parte);
+                        break;
+                    case VAZIO:
+                        imprimeparte(desenhovazio, parte);
+                        break;
+                }
+            }
+            printf("\n");
+        }
     }
 }
 
@@ -144,8 +211,6 @@ void andanomapa(MAPA* m, int xorigem, int yorigem, int xdestino, int ydestino) {
 }
 
 void move(char direcao) {
-    if (!ehdirecao(direcao)) 
-    return;
 
     int proximox = avatar.x;
     int proximoy = avatar.y;
@@ -167,10 +232,38 @@ void move(char direcao) {
 
     if (!podeandar(&m, AVATAR, proximox, proximoy))
         return;
+
+    if(ehumpersonagem(&m, PILULA, proximox, proximoy)) {
+        tempilula = 1;
+    }
     
     andanomapa(&m, avatar.x, avatar.y, proximox, proximoy);
     avatar.x = proximox;
     avatar.y = proximoy;
+}
+
+void explodepilula() {
+
+    if(!tempilula) return;
+    explodepilula2(avatar.x, avatar.y, 0, 1, 3);
+    explodepilula2(avatar.x, avatar.y, 0, -1, 3);
+    explodepilula2(avatar.x, avatar.y, 1, 0, 3);
+    explodepilula2(avatar.x, avatar.y, -1, 0, 3);
+    tempilula = 0;
+}
+
+void explodepilula2(int x, int y, int somax, int somay, int qtd) {
+
+    if(qtd == 0) return;
+
+    int novox = x + somax;
+    int novoy = y + somay;
+
+    if(!ehvalida(&m, novox, novoy)) return;
+    if(ehparede(&m, novox, novoy)) return;
+
+    m.matriz[novox][novoy] == VAZIO;
+    explodepilula2(novox, novoy, somax, somay, qtd-1);
 }
 
 int main() {
@@ -180,10 +273,16 @@ int main() {
     lermapa(&m);
     encontramapa(&m, &avatar, AVATAR);
     do {
+
+        printf("Tem pilula: %s\n", (tempilula ? "SIM" : "NÃO"));
         imprimirmapa(&m);
+
         char comando;
         scanf(" %c", &comando);
-        move(comando);
+
+        if(ehdirecao(comando)) move(comando);
+        if(comando == BOMBA) explodepilula();
+        
         fantasmas();
     } while (!acabou());
     liberarmapa(&m);
